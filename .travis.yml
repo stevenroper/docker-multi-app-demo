@@ -1,0 +1,22 @@
+language: generic
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t stevenroper/client-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true stevenroper/client-test npm run test
+
+after_success:
+  - docker build -t stevenroper/fib-client ./client
+  - docker build -t stevenroper/fib-nginx ./nginx
+  - docker build -t stevenroper/fib-server ./server
+  - docker build -t stevenroper/fib-worker ./worker
+  - echo "$DOCKER_ACCESS_KEY" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push stevenroper/fib-client
+  - docker push stevenroper/fib-nginx
+  - docker push stevenroper/fib-server
+  - docker push stevenroper/fib-worker
