@@ -20,3 +20,15 @@ after_success:
   - docker push stevenroper/fib-nginx
   - docker push stevenroper/fib-server
   - docker push stevenroper/fib-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-1"
+  app: "multi-docker"
+  env: "Multidocker-env"
+  bucket_name: "elasticbeanstalk-us-west-1-401458995882"
+  bucket_path: "multi-docker-demo"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
